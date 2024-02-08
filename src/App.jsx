@@ -1,35 +1,65 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import  { useState, useEffect } from 'react'
+import Body from './components/Body'
+import Search from './components/Search'
 
 function App() {
-  const [count, setCount] = useState(0)
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+        const [people, setPeople] = useState([]);
+        const [peopleCount, setPeopleCount] = useState(0);
+        const [planetsCount, setPlanetsCount] = useState(0);
+        const [planets, setPlanets] = useState([]);
+        const [currentPage, setCurrentPage] = useState(1);
+
+        const noOfPeoplePages = Math.ceil(peopleCount / 10);
+        const noOfPlanetsPages = Math.ceil(planetsCount / 10);
+
+        let noOfPages;
+        if (noOfPeoplePages > noOfPlanetsPages) {
+                noOfPages = noOfPeoplePages;
+        } else {
+                noOfPages = noOfPlanetsPages;
+        }
+
+        useEffect(() => {
+                fetch("https://swapi.dev/api/people/?page=" + currentPage )
+                        .then((response) => response.json())
+                        .then((data) => {
+                                setPeople(data.results);
+                                setPeopleCount(data.count);
+                        })
+                        .catch((error) => console.log(error));
+
+                        fetch("https://swapi.dev/api/planets/?page=" + currentPage)
+                        .then((response) => response.json())
+                        .then((data) => {
+                                setPlanets(data.results);
+                                setPlanetsCount(data.count);
+                        })
+                        .catch((error) => console.log(error));
+
+                        //get count of people
+
+        }, [ currentPage ]);
+
+        return (
+        <>
+            <h1>People and Planets</h1>
+            <Search />
+            <br></br>
+                <>
+                    <div className="people-planet-container">
+                        <Body people={ people } planets={ planets } />
+                    </div>
+                    <div className="pagination">
+                        {[...Array(noOfPages)].map((_, i) => (
+                                <button key={i} onClick={() => setCurrentPage(i + 1)}>{i + 1}</button>
+                        ))}
+                    </div>
+                </>
+
+        </>
+    )
 }
 
 export default App
