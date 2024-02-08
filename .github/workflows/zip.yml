@@ -1,0 +1,41 @@
+name: Zip and Push
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  zip-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout source repo
+      uses: actions/checkout@v2
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+    - name: Install gh CLI
+      run: npm install -g gh
+
+    - name: Zip repo contents
+      run: zip -r my_repo.zip .
+
+    - name: Checkout destination repo
+      uses: actions/checkout@v2
+      with:
+        repository: abhishakedahal/listing-zip
+        token: ${{ secrets.PAT }} # You need to set this in your secrets
+
+    - name: Move zip file
+      run: mv my_repo.zip ../listing-zip/
+
+    - name: Commit and push
+      run: |
+        git config --global user.name 'Your Name'
+        git config --global user.email 'your-email@example.com'
+        git add .
+        git commit -m "Add new zip file"
+        git push
