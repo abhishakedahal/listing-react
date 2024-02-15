@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: abhishakedahal/listing-zip
-          repo-token: ${{ secrets.ABHISHEK }}
+          repo-token: ${{ secrets.HORLICKS }}
           ref: master
       
       - name: Commit and push dist folder
