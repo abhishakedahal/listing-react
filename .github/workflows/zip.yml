@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: abhishakedahal/listing-zip
-          token: ${{ secrets.ABHISHEK }}
+          token: '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'
       
       - name: Commit and push dist folder
         run: |
