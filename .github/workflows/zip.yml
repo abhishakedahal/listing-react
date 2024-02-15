@@ -13,12 +13,10 @@ jobs:
 
       - name: Download release asset
         id: download
-        uses: dsaltares/fetch-gh-release-asset@master
+        uses: robinraju/release-downloader@v1.9
         with:
-          repo: 'abhishakedahal/listing-react'
-          version: 'tags/${{ github.event.release.tag_name }}'
-          file: 'zakra.zip'
-          token: ${{ secrets.TEST }}
+          latest: true
+          fileName: "zakra.zip"
 
       - name: Push to another repository
         uses: ad-m/github-push-action@master
