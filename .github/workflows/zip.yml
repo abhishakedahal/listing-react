@@ -3,7 +3,7 @@ name: Sync Dist Folder
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   sync-dist-folder:
