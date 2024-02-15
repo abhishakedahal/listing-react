@@ -1,37 +1,30 @@
-name: Push Uploaded Zip to Another Repo
+name: Push Release File to Another Repository
 
 on:
   release:
-    types: [published]
+    types: [created]
 
 jobs:
-  push_zip:
+  push:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Get uploaded zip path (assuming first asset)
-        run: |
-          ZIP_PATH=${{ github.event.release.assets.[0].browser_download_url }}
-          echo "ZIP_PATH: $ZIP_PATH" >> $GITHUB_ENV
-
-      - name: Download uploaded zip
-        uses: svenstaro/downl/v5
+      - name: Download release asset
+        id: download
+        uses: dsaltares/fetch-gh-release-asset@master
         with:
-          url: ${{ env.ZIP_PATH }}
-          output_dir: release_zip
+          repo: "listing-react"
+          version: "tags/${{ github.event.release.tag_name }}"
+          file: "zakra.zip"
+        env:
+          GITHUB_TOKEN: "${{ secrets.DESTINATION_PATH }}"
 
-      - name: Configure git for pushing
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "${{ github.actor }}@github.com"
-          echo "${{ secrets.DESTINATION_PATH }}" | gh auth login --with-token
-
-      - name: Push files to another repository
-        uses: nkoppel/push-files-to-another-repository@v3
+      - name: Push to another repository
+        uses: ad-m/github-push-action@master
         with:
-          folder: release_zip
-          repository: "https://github.com/abhishakedahal/listing-zip"  # Replace with your actual destination repo URL
-          branch: main  # Adjust branch name if needed
-          token: ${{ secrets.DESTINATION_PATH }}
+          github_token: ${{ secrets.DESTINATION_PATH }}
+          repository: username/other-repo
+          directory: .
+          commit_message: "New release file from ${{ github.repository }}"
