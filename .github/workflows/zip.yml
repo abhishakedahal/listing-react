@@ -21,12 +21,13 @@ jobs:
         with:
           repository: abhishakedahal/listing-zip
           token: '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'
+          ref: master
       
       - name: Commit and push dist folder
         run: |
-          git config user.name 'GitHub Actions'
-          git config user.email 'actions@github.com'
-          cp -r $HOME/dist/* .
-          git add .
-          git commit -m "Sync dist folder"
-          git push
+           git config user.name 'GitHub Actions'
+            git config user.email 'actions@github.com'
+            cp -r $HOME/dist/* .
+            git add .
+            git commit -m "Sync dist folder"
+            git push origin HEAD:master
